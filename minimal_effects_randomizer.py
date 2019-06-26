@@ -19,12 +19,12 @@ def meRandomize(m, n, random_state=None):
 	perms = list(itertools.permutations(range(n)))
 	perm_mat = np.zeros((len(perms),2*(n**2)))
 	for idx in range(len(perms)):
-		for idx2, val in range(len(perms)):
-			perm_mat[idx, (idx2*n)+vak] = 1
+		for idx2, val in enumerate(perms[idx]):
+			perm_mat[idx, (idx2*n)+val] = 1
 			perm_mat[idx, (n**2)+perms[idx][idx2-1]*n+perms[idx][idx2]]=1
 
-	draws = [perm_mat[np.random.choice(len(params)),:]]
-	while len(draws<m):
+	draws = [perm_mat[np.random.choice(len(perms)),:]]
+	while len(draws)<m:
 		np.random.shuffle(perm_mat)
 		ind_new = np.argmax([np.sum([euclidean(np.array(p1),np.array(p2)) for p1 in draws]) for p2 in perm_mat])
 		draws.append(perm_mat[ind_new,:])
@@ -32,6 +32,6 @@ def meRandomize(m, n, random_state=None):
 
 	draws_compressed = []
 	for draw in draws:
-		draw_compressed.append([np.argmax(draw[idx*n:(idx+1)*n]) for idx in range(n)])
+		draws_compressed.append([np.argmax(draw[idx*n:(idx+1)*n]) for idx in range(n)])
 
 	return draws_compressed
